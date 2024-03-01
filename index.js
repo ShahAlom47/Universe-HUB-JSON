@@ -1,30 +1,61 @@
 
 const cardContainer = document.getElementById('card-container');
 const modalContainer = document.getElementById('my_modal_4');
-const tolsUrl = ' https://openapi.programming-hero.com/api/ai/tools'
+const seeMoreBtn = document.getElementById('seeMore')
+const sortBtn = document.getElementById('sortBtn');
+const tolsUrl = ' https://openapi.programming-hero.com/api/ai/tools' 
+
+let isSorted=false;
+let showData = true
 
 
+// defult \
 
-
-
+function callData(sort,show){
+ 
 fetch(tolsUrl)
 .then(res=>res.json())
 .then(datas=>{
 let datasArr=datas?.data?.tools;
 
-console.log(datasArr);
 
-datasArr.sort((a,b)=> {
-    let date1st = a.published_in
-    let date2nd =b.published_in
-    return date1st-date2nd;
-})
-console.log(datasArr);
 
-for(let data of datasArr){ 
-    makeCard(data)
+if(sort){
+    datasArr.sort((a,b)=> {
+        let date1st =new Date( a.published_in)
+        let date2nd =new Date (b.published_in)
+        return date1st-date2nd;
+    })
 }
+// show 6
+
+if(show){
+
+   datasArr = datasArr.slice(0, 6);
+    console.log(datasArr);
+}
+
+seeMoreBtn.classList.remove("hidden")
+if(!show){
+    seeMoreBtn.classList.add("hidden")
+}
+// reset card container 
+cardContainer.innerHTML=''
+for(let data of datasArr){  makeCard(data)}
 })
+}
+
+// callData(isSorted);
+sortBtn.addEventListener('click',()=>{
+
+    isSorted=true
+    callData(isSorted,showData);
+   
+    })
+
+    callData(isSorted,showData);
+
+
 
 //Card makeing  start 
 const makeCard = (data)=>{
@@ -32,6 +63,9 @@ const createCard = document.createElement('div');
 const featuresContainer = document.createElement('div');
 const cardBottomContainer= document.createElement('div') 
 const createBtn = document.createElement('button');
+
+
+
 
 createCard.className=` card  bg-base-100 shadow-xl`
 createCard.innerHTML=`
@@ -156,9 +190,15 @@ modalContainer.appendChild(modalcard);
 }
 // make modal function  end 
 
-const createrandomNum = ()=>{
 
-   
-     
-};
-console.log( );
+// see more 
+
+seeMoreBtn.addEventListener('click',()=>{
+    showData=false
+    callData(isSorted,showData);
+    
+})
+
+
+
+
